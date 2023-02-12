@@ -1,0 +1,161 @@
+---
+title: "Data_607_Assignment3"
+author: "Mohamed Hassan-El Serafi"
+date: "2023-02-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(stringr)
+```
+
+
+Please deliver links to an R Markdown file (in GitHub and rpubs.com) with solutions to the problems below.  You may work in a small group, but please submit separately with names of all group participants in your submission.
+
+
+### 1. Using the 173 majors listed in fivethirtyeight.com’s College Majors dataset [https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/], provide code that identifies the majors that contain either "DATA" or "STATISTICS"
+
+```{r}
+df <- read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/majors-list.csv")
+df
+```
+
+
+```{r}
+glimpse(df)
+colnames(df)
+df
+```
+
+```{r}
+new_df<- df[grep("DATA|STATISTICS", df$Major),]
+new_df
+```
+
+
+### 2. Write code that transforms the data below:
+
+[1] "bell pepper"  "bilberry"     "blackberry"   "blood orange"
+[5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
+[9] "elderberry"   "lime"         "lychee"       "mulberry"    
+[13] "olive"        "salal berry"
+
+
+Into a format like this:
+
+c("bell pepper", "bilberry", "blackberry", "blood orange", "blueberry", "cantaloupe", "chili pepper", "cloudberry", "elderberry", "lime", "lychee", "mulberry", "olive", "salal berry")
+
+
+
+
+```{r}
+string_list = c('[1] "bell pepper"  "bilberry"     "blackberry"   "blood orange"
+[5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
+[9] "elderberry"   "lime"         "lychee"       "mulberry"    
+[13] "olive"        "salal berry"')
+string_list
+```
+
+```{r}
+new_string_list <- str_extract_all(string_list, "\\w[a-z]+\\s?[a-z]+\\w")
+print(new_string_list)
+```
+
+```{r}
+new_list <- gsub('[[:digit:]]+', '', new_string_list)
+new_list
+```
+
+
+```{r}
+class(new_list)
+```
+
+
+```{r}
+cat(str_c(new_list, collapse = " , "))
+```
+
+
+The two exercises below are taken from R for Data Science, 14.3.5.1 in the on-line version:
+
+
+### 3. Describe, in words, what these expressions will match:
+
+(.)\1\1 
+
+This expression would throw an error, since it's missing double quotes and a backslash.
+
+```{r}
+test_set <- c('aaa','bbbght','abba','1221','xyzzyx','zrzrzlk','53575','abaza','1234djakfl;jdafkjad4321','abccba', "$%^^%$#@*")
+str_match(test_set, "(.)\1\1")
+```
+
+
+"(.)(.)\\2\\1"
+
+This expression would produce two characters followed by the same characters in reverse order. An example is "abba".
+
+```{r}
+str_match(test_set, "(.)(.)\\2\\1")
+```
+
+
+(..)\1
+
+This expression would throw an error, since it's missing double quotes and a backslash.
+
+```{r}
+str_match(test_set, "(..)\1")
+```
+
+
+"(.).\\1.\\1"
+
+This expression produces characters that are repeated 3 or more times within a group of characters.
+
+```{r}
+str_match(test_set, "(.).\\1.\\1")
+```
+
+
+"(.)(.)(.).*\\3\\2\\1"
+
+This expression would produce a group where a string of 3 or more characters also appear in reverse order anywhere in the group.
+
+
+```{r}
+str_match(test_set, "(.)(.)(.).*\\3\\2\\1")
+```
+
+
+### 4. Construct regular expressions to match words that:
+Start and end with the same character.
+Contain a repeated pair of letters (e.g. "church" contains "ch" repeated twice.)
+Contain one letter repeated in at least three places (e.g. "eleven" contains three "e"s.)
+
+```{r}
+# Start and end with the same character
+variable_set <- c("test", "high", "stuff", "lawn", "abra")
+str_extract(variable_set, "^(.).*\\1$")
+```
+
+
+```{r}
+# Contain a repeated pair of letters (e.g. "church" contains "ch" repeated twice.)
+testing_set <- c("trial", "church", "mile", "pepper")
+str_match(testing_set, "(..).*\\1")
+```
+
+
+```{r}
+# Contain one letter repeated in at least three places (e.g. "eleven" contains three "e"s.)
+variable_test_set <- c("model", "eleven", "pepper", "train", "mississippi")
+str_extract(variable_test_set, "([a-z]).*\\1.*\\1")
+```
+
